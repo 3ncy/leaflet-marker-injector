@@ -3,6 +3,8 @@
 // @description  Allows easy adding of custom markers by their position;
 // @author       Ency
 // @homepage     https://github.com/3ncy/leaflet-marker-injector
+// @downloadURL  https://github.com/3ncy/leaflet-marker-injector/raw/refs/heads/main/leaflet-marker-injector.user.js
+// @updateURL    https://github.com/3ncy/leaflet-marker-injector/raw/refs/heads/main/leaflet-marker-injector.user.js
 // @match        https://tarkov.dev/map/*
 // @run-at       document-start
 // @version      2025-12-22
@@ -35,6 +37,22 @@ function create(position, color = null, name = null) {
 window.add = create;
 
 
+function createMultiple(points, color = null) {
+    let groupName = "";
+    if (points.Id) groupName = points.Id;
+    if (points.GroupPositions) points = points.GroupPositions;
+    let markers = [];
+    for (let point of points) {
+        let name = groupName;
+        if (name) name += '<br>';
+        name += point.Name;
+        markers.push(create(point.Position, color, name));
+    }
+    return markers;
+}
+window.addMore = createMultiple;
+
+
 function standardize_color(str) {
     var ctx = document.createElement('canvas').getContext('2d');
     ctx.fillStyle = str;
@@ -42,8 +60,18 @@ function standardize_color(str) {
 }
 
 
-function remove(marker) {
+function removeOne(marker) {
     window.leafletMap.removeLayer(marker);
+}
+
+function remove(marker) {
+    if (Array.isArray(marker)) {
+        for (let m of marker) {
+            removeOne(m);
+        }
+    } else {
+        removeOne(marker);
+    }
 }
 window.del = remove;
 
@@ -72,6 +100,4 @@ window.del = remove;
     }
 
     interceptLeaflet();
-
-    window.create = create;
 })();
