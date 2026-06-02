@@ -7,7 +7,7 @@
 // @updateURL    https://github.com/3ncy/leaflet-marker-injector/raw/refs/heads/main/leaflet-marker-injector.user.js
 // @match        https://tarkov.dev/map/*
 // @run-at       document-start
-// @version      2026-03-13
+// @version      2026-06-02
 // @grant        none
 // ==/UserScript==
 
@@ -75,6 +75,26 @@ function remove(marker) {
 }
 window.del = remove;
 
+function addRectangle(center, size, offset = null, color = null) {
+    if (color == null) color = "#3388ff";
+    else color = standardize_color(color);
+
+    let centerX = center.z; // .Z instead of .X because of the coordinate conversion to Leaflet's screen coords
+    let centerY = center.x; // ditto
+    let offsetX = offset ? offset.z : 0;
+    let offsetY = offset ? offset.x : 0;
+    let width = Math.abs(size.z); // .Z instead of .X because of the coordinate conversion to Leaflet's screen coords
+    let height = Math.abs(size.x); // ditto
+
+    let polygon = L.polygon([
+        [centerX + offsetX - width / 2, centerY + offsetY - height / 2],
+        [centerX + offsetX + width / 2, centerY + offsetY - height / 2],
+        [centerX + offsetX + width / 2, centerY + offsetY + height / 2],
+        [centerX + offsetX - width / 2, centerY + offsetY + height / 2]
+    ], { color: color }).addTo(window.leafletMap);
+    return polygon;
+}
+window.addRect = addRectangle;
 
 (function () {
     'use strict';
