@@ -7,7 +7,7 @@
 // @updateURL    https://github.com/3ncy/leaflet-marker-injector/raw/refs/heads/main/leaflet-marker-injector.user.js
 // @match        https://tarkov.dev/map/*
 // @run-at       document-start
-// @version      2025-12-22
+// @version      2026-03-13
 // @grant        none
 // ==/UserScript==
 
